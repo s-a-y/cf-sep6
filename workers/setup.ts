@@ -1,4 +1,5 @@
 import { Handler, Query, HTTPMethod, Route } from '../src/@types/http'
+import { logger } from '../src/utils/logger';
 
 export default function setup({
   worker,
@@ -81,14 +82,17 @@ async function handleRequest(
   }
 
   try {
-    const body = (await request.json()) || {}
+    let body = {};
+    try {
+      body = (await request.json())
+    } catch(err) {}
 
     const { data = null, status = 200, statusText = 'ok', message = 'ok' } =
       (await handler({ body, url, query })) || {}
 
     return buildResponse({ data, status, statusText, message })
   } catch (error) {
-    return buildResponse(error)
+    return buildResponse({ message: error.stack, status: 500, statusText: 'Internal Server Error' })
   }
 }
 
@@ -110,12 +114,7 @@ function buildResponse({
   let payload
 
   try {
-    payload = JSON.stringify({
-      message,
-      status,
-      statusText,
-      data,
-    })
+    payload = JSON.stringify(data || { message: message })
   } catch {
     payload = `{"message":${message},"status":500}`
   }
@@ -125,6 +124,9 @@ function buildResponse({
     statusText,
     headers: {
       'content-type': 'application/json',
+      'Access-Control-Allow-Origin': '*',
+      'Access-Control-Allow-Methods': 'GET,HEAD,POST,OPTIONS',
+      'Access-Control-Max-Age': '86400',
     },
   })
 }

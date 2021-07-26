@@ -1,5 +1,6 @@
 import { Overwrite } from '../@types/util'
 import { HTTPMethod, ResponsePayload } from '../@types/http'
+import { logger } from './logger';
 
 export function makeRequest(
   endpoint: string,
@@ -22,8 +23,7 @@ export function makeRequest(
     .then((res) => {
       if (res && res.status === 200) {
         if (
-          (res.headers.get('content-type') || '').toLowerCase() ===
-          'application/json'
+          (res.headers.get('content-type') || '').toLowerCase().startsWith('application/json')
         ) {
           return res.json()
         }

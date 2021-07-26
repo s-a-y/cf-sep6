@@ -1,5 +1,6 @@
 const path = require('path')
 const Dotenv = require('dotenv-webpack')
+const webpack = require('webpack')
 
 const mode = process.env.NODE_ENV || 'production'
 
@@ -11,6 +12,14 @@ module.exports = {
   },
   devtool: 'source-map',
   mode,
+  node: {
+    child_process: 'empty',
+    dns: 'empty',
+    fs: 'empty',
+    crypto: 'empty',
+    net: 'empty',
+    tls: 'empty'
+  },
   resolve: {
     extensions: ['.ts', '.tsx', '.js'],
     plugins: [],
@@ -31,6 +40,9 @@ module.exports = {
     new Dotenv({
       path: path.resolve(__dirname, '.env.' + mode),
       safe: path.resolve(__dirname, '.env.development'),
+    }),
+    new webpack.IgnorePlugin({
+      resourceRegExp: /sodium-native/
     }),
   ],
 }

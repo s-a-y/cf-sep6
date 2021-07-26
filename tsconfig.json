@@ -5,6 +5,8 @@
     "target": "es2019",
     "lib": ["ESNext", "WebWorker", "DOM", "DOM.Iterable"],
     "alwaysStrict": true,
+    "experimentalDecorators": true,
+    "strictPropertyInitialization": false,
     "strict": true,
     "preserveConstEnums": true,
     "moduleResolution": "node",
