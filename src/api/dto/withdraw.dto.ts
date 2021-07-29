@@ -2,47 +2,37 @@
 
 import { IsKnownAsset } from '../../validators/known-asset.validator';
 import { IsStellarAccount } from '../../validators/stellar-account.validator';
-import {
-  IsIn,
-  IsEmail,
-  IsAlpha,
-  Length,
-  IsUrl,
-  IsAlphanumeric,
-  IsOptional,
-  ValidateIf,
-  IsPositive, IsNumberString
-} from 'class-validator';
+import { MemoType, MemoID, MemoText, MemoHash } from 'stellar-base';
+import { IsIn, IsAlpha, Length, IsUrl, IsAlphanumeric, IsOptional, ValidateIf } from 'class-validator';
+import { Transform } from 'class-transformer';
 import { IsStellarMemo } from '../../validators/stellar-memo.validator';
 import { IsKnownAssetIssuer } from '../../validators/known-asset-issuer.validator';
-import { MemoType, MemoNone, MemoID, MemoText, MemoHash, MemoReturn } from 'stellar-base';
 
-export class DepositDto {
+export class WithdrawDto {
   @IsKnownAsset()
   readonly asset_code: string;
   @IsStellarAccount()
   @IsKnownAssetIssuer()
   @IsOptional()
   readonly asset_issuer?: string; // currently not in use, but required by the standard
-  @IsNumberString()
-  @IsPositive()
+  @IsIn(['crypto'])
+  readonly type: string;
+  @IsAlphanumeric()
+  @Length(2, 100)
+  readonly dest: string;
+  @IsAlphanumeric()
+  @Length(2, 50)
   @IsOptional()
-  readonly amount?: number;
+  readonly dest_extra?: string;
   @IsStellarAccount()
+  @IsOptional()
   readonly account: string;
-  @IsIn([MemoNone, MemoID, MemoText, MemoHash, MemoReturn])
+  @IsIn([MemoID, MemoText, MemoHash])
   @IsOptional()
   readonly memo_type?: MemoType;
   @IsStellarMemo()
   @ValidateIf(o => o.memo_type)
   readonly memo?: string;
-  @IsEmail()
-  @IsOptional()
-  readonly email_address?: string;
-  @IsAlpha()
-  @Length(2, 50)
-  @IsOptional()
-  readonly type?: string;
   @IsAlphanumeric()
   @Length(2, 50)
   @IsOptional()
@@ -54,7 +44,4 @@ export class DepositDto {
   @Length(2, 2)
   @IsOptional()
   readonly lang?: string;
-  @IsOptional()
-  @IsIn(['default','legacy'])
-  readonly address_format?: string;
 }

@@ -24,4 +24,16 @@ export class BitGo {
       }
     })
   }
+
+  static async validateAddress(coin: string, dest: string): Promise<boolean> {
+    return makeRequest(`${baseUrl}/api/v2/${coin}/verifyaddress`, {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${authToken}`
+      },
+      body: {
+        address: dest
+      }
+    }).then(res => res.isValid);
+  }
 }

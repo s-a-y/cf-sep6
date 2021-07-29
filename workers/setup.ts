@@ -72,6 +72,14 @@ async function handleRequest(
   request: Request,
   { handler, url, query }: { handler?: Handler; url: URL; query: Query }
 ) {
+  if (request.method === 'OPTIONS') {
+    return buildResponse({
+      status: 200,
+      statusText: 'ok',
+      message: 'ok',
+      data: null,
+    })
+  }
   if (!handler) {
     return buildResponse({
       status: 404,
@@ -82,7 +90,7 @@ async function handleRequest(
   }
 
   try {
-    let body = {};
+    let body = null;
     try {
       body = (await request.json())
     } catch(err) {}
@@ -124,6 +132,7 @@ function buildResponse({
     statusText,
     headers: {
       'content-type': 'application/json',
+      'Access-Control-Allow-Headers': 'Authorization',
       'Access-Control-Allow-Origin': '*',
       'Access-Control-Allow-Methods': 'GET,HEAD,POST,OPTIONS',
       'Access-Control-Max-Age': '86400',

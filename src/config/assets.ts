@@ -12,7 +12,14 @@ export default [
       fee_fixed: 0.0,
       fee_percent: 0.0
     },
+    withdraw: {
+      eta: 1200,
+      min: 0.0001,
+      fee_fixed: 0.0001,
+      fee_percent: 0.001
+    },
     stellar: {
+      distributor: '',
       issuer: ''
     }
   },
@@ -29,7 +36,14 @@ export default [
       fee_fixed: 0.0,
       fee_percent: 0.0
     },
+    withdraw: {
+      eta: 1200,
+      min: 0.0001,
+      fee_fixed: 0.0001,
+      fee_percent: 0.001
+    },
     stellar: {
+      distributor: '',
       issuer: ''
     }
   }

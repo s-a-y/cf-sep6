@@ -20,10 +20,10 @@ function getExtraInfo(trusts: boolean, exists: boolean, asset: any) {
   };
 }
 
-const handler: Handler = async function ({ body }) {
+const handler: Handler = async function ({ body, query }) {
   logger.info('/deposit')
 
-  const dto = plainToClass(DepositDto, body);
+  const dto = plainToClass(DepositDto, body || query);
   try {
     await validate(dto, {
       whitelist: true,
@@ -47,7 +47,7 @@ const handler: Handler = async function ({ body }) {
   let mapping = await DynamoDb.getMappingByAccount(dto) || {};
   if (!mapping.addressIn) {
     mapping.addressIn = await BitGo.createAddress(asset.bitgo.coin, asset.bitgo.id, dto.address_format === 'legacy');
-    await DynamoDb.saveMapping({
+    await DynamoDb.createMapping({
       ...mapping,
       ...dto,
       ...(muxed? {
@@ -72,4 +72,4 @@ const handler: Handler = async function ({ body }) {
   };
 }
 
-export default ['POST', '/deposit', handler] as Route
+export default ['*', '/deposit', handler] as Route

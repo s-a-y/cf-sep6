@@ -6,7 +6,6 @@
 
 **/worker
 **/dist
-**/package-lock.json
 
 # Local files can be prefixed with _
 _*
